@@ -4,11 +4,13 @@
 //   ?stage=3   start på etappe 3 (øv på rektor)
 //   ?seed=42   fast tilfeldigheit
 //   ?mute      start utan lyd
+//   ?touch     vis spelkontrollane for berøring (t.d. på PC med berøringsskjerm)
 
 import { CanvasDisplay } from "./engine/screen.js";
 import { SoundManager } from "./engine/sound.js";
 import { Game } from "./game.js";
 import { Random } from "./rng.js";
+import { TouchControls } from "./touch.js";
 
 const params = new URLSearchParams(window.location.search);
 const seedParam = params.get("seed");
@@ -19,8 +21,13 @@ const display = new CanvasDisplay(canvas);
 const sound = new SoundManager(!params.has("mute"));
 
 function toggleFullscreen() {
-  if (document.fullscreenElement) document.exitFullscreen?.();
-  else document.documentElement.requestFullscreen?.().catch(() => {});
+  if (document.fullscreenElement) {
+    document.exitFullscreen?.();
+    return;
+  }
+  const req = document.documentElement.requestFullscreen?.({ navigationUI: "hide" });
+  // På Android kan vi låse skjermen i liggjande format når spelet er i fullskjerm
+  req?.then(() => screen.orientation?.lock?.("landscape")).catch(() => {});
 }
 
 const game = new Game({
@@ -30,6 +37,30 @@ const game = new Game({
   onFullscreen: toggleFullscreen,
 });
 game.start();
+
+// ---------------------------------------------------------------- mobil
+const touch = new TouchControls(game, sound);
+if (params.has("touch") || window.matchMedia("(pointer: coarse)").matches) touch.enable();
+window.addEventListener("touchstart", () => touch.enable(), { once: true, passive: true });
+
+/** Pause spelet (om scena tillèt det), t.d. når brukaren byter app. */
+function autoPause() {
+  game.held.clear();
+  if (game.top?.pausable) game.keyDown("ESC");
+}
+
+/** Er telefonen på høgkant med for lite plass til teksten? Be brukaren snu han. */
+function checkOrientation() {
+  const portrait = window.innerHeight > window.innerWidth;
+  const rotate = touch.enabled && portrait && display.cssCell < 6.5;
+  if (rotate && !document.body.classList.contains("rotate")) autoPause();
+  document.body.classList.toggle("rotate", rotate);
+}
+window.addEventListener("resize", checkOrientation);
+checkOrientation();
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) autoPause();
+});
 
 // ---------------------------------------------------------------- tastatur
 const NAMED = {
@@ -46,7 +77,10 @@ function normalise(e) {
   return null;
 }
 
+const textInput = document.getElementById("textin");
+
 window.addEventListener("keydown", (e) => {
+  if (e.target === textInput) return; // skjermtastaturet blir handtert i touch.js
   if (e.ctrlKey || e.metaKey || e.altKey) return; // la nettlesarsnarvegar vere i fred
   const key = normalise(e);
   if (key === null) return;
@@ -66,7 +100,9 @@ window.addEventListener("keyup", (e) => {
 window.addEventListener("blur", () => game.held.clear());
 canvas.addEventListener("pointerdown", () => {
   sound.unlock();
-  canvas.focus();
+  // Trykk på skjermen opnar tastaturet når spelet ventar på tekst
+  if (touch.enabled && game.top?.wantsText) touch.focusInput();
+  else canvas.focus();
 });
 canvas.focus();
 
@@ -80,6 +116,7 @@ function loop(now) {
   last = now;
   game.frame(dt);
   display.render(game.r);
+  touch.update();
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);

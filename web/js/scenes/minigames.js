@@ -421,12 +421,18 @@ export class TypingMinigame extends Minigame {
       "Feil tast blir ikkje skriven – berre prøv igjen. Store/små bokstavar spelar inga rolle.",
       "Klarar du det ikkje i tide, tek du 8 skade.",
     ];
+    if (game.touch) this.instructions.push("På mobil får du litt ekstra tid. Kjem ikkje tastaturet opp, trykk på ⌨ Tastatur.");
     this.target = this.rng.choice(SENTENCES);
-    this.timeLimit = this.target.length / 3 + 3;
+    // Det går seinare å skrive på eit skjermtastatur, så mobil får litt ekstra tid
+    this.timeLimit = game.touch ? this.target.length / 2.2 + 4 : this.target.length / 3 + 3;
     this.pos = 0;
     this.left = this.timeLimit;
     this.errors = 0;
     this.errT = 0;
+  }
+
+  get wantsText() {
+    return this.phase === "countdown" || this.phase === "play";
   }
 
   playUpdate(dt) {

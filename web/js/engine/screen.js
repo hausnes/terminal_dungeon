@@ -172,6 +172,7 @@ const BLOCKS = {
 
 const FONT_STACK = 'Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace';
 const CELL_RATIO = 1.9; // høgd / breidd for ei rute
+const TOUCH_SIDES = 275; // CSS-pikslar som styrespak og knappar treng til saman
 
 export class CanvasDisplay {
   constructor(canvas) {
@@ -186,9 +187,17 @@ export class CanvasDisplay {
     const dpr = window.devicePixelRatio || 1;
     const hint = document.getElementById("hint");
     const hintH = hint && hint.offsetParent !== null ? hint.offsetHeight + 10 : 0;
-    const availW = window.innerWidth * 0.96;
-    const availH = (window.innerHeight - hintH) * 0.95;
-    const cssCell = Math.max(4, Math.min(availW / (CANVAS_W + 2), availH / ((CANVAS_H + 1) * CELL_RATIO)));
+    const touch = document.body.classList.contains("touch");
+    const availW = window.innerWidth * (touch ? 0.99 : 0.96);
+    const availH = (window.innerHeight - hintH) * (touch ? 0.98 : 0.95);
+    const fit = (w) => Math.max(4, Math.min(w / (CANVAS_W + 2), availH / ((CANVAS_H + 1) * CELL_RATIO)));
+    let cssCell = fit(availW);
+    if (touch) {
+      // Gi plass til styrespaken og knappane på sidene – men berre om teksten framleis blir lesbar.
+      const reserved = fit(availW - TOUCH_SIDES);
+      if (reserved >= cssCell * 0.8) cssCell = reserved;
+    }
+    this.cssCell = cssCell;
     this.cw = Math.max(4, Math.floor(cssCell * dpr));
     this.chh = Math.round(this.cw * CELL_RATIO);
     this.padX = this.cw;

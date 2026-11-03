@@ -42,6 +42,10 @@ export class CharacterScene extends Scene {
     this.tickT = 0;
   }
 
+  get wantsText() {
+    return this.phase === "name";
+  }
+
   get rolling() {
     return !this.settled.every(Boolean);
   }
@@ -70,7 +74,7 @@ export class CharacterScene extends Scene {
       if (ENTER.has(key)) {
         this.sound.play("confirm");
         this.game.startLevel(this.hero);
-      } else if ((key === "r" || key === "R") && this.rerolls > 0) {
+      } else if ((key === "r" || key === "R" || key === " ") && this.rerolls > 0) {
         this.rerolls -= 1;
         this.startRoll();
       }
@@ -104,6 +108,7 @@ export class CharacterScene extends Scene {
       const cursor = Math.floor(this.t * 3) % 2 === 0 ? "_" : " ";
       r.text(27, 10, this.name + cursor, "white", { bold: true });
       r.center(13, "Skriv namnet ditt og trykk ENTER", "grey");
+      if (this.game.touch) r.center(14, "(Trykk på skjermen eller ⌨ Tastatur for å skrive)", "dark");
       r.center(16, "Stats blir trekte tilfeldig etterpå. Kvar runde blir unik!", "sky");
       return;
     }
@@ -128,7 +133,7 @@ export class CharacterScene extends Scene {
       r.text(10, 13, `Helse: ${hero.maxHp} HP (24 + styrke)`, "lime");
       flavour(hero.stats).forEach((line, j) => r.center(15 + j, line, "sky"));
       r.center(19, "ENTER = start spelet", "yellow", { bold: true });
-      if (this.rerolls) r.center(20, `R = trekk på nytt (${this.rerolls} att)`, "light");
+      if (this.rerolls) r.center(20, `R / MELLOMROM = trekk på nytt (${this.rerolls} att)`, "light");
     }
     this.fx.draw(r);
   }

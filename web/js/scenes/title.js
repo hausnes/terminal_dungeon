@@ -76,7 +76,7 @@ export class TitleScene extends Scene {
       r.text(30, 16 + i, marker + opt, selected ? "yellow" : "light", { bold: selected });
     });
     if (this.sound.available && !this.sound.unlocked) {
-      r.center(22, "Trykk ein tast for å slå på lyden", "yellow");
+      r.center(22, this.game.touch ? "Trykk på ein knapp for å slå på lyden" : "Trykk ein tast for å slå på lyden", "yellow");
     } else {
       r.center(22, "↑↓ vel · ENTER stadfest · ESC pause i spelet", "grey");
     }
@@ -94,6 +94,7 @@ export class HelpScene extends Scene {
     ["", "red", "Tapar du ein kamp, går du vidare med 1 HP. Mot rektor: game over."],
     ["STATS", "purple", "Styrke, Utspekulert og Sexy (1–10) blir trekte tilfeldig."],
     ["TASTAR", "grey", "ESC = pause (lyd av/på, fullskjerm, til tittelskjermen)."],
+    ["MOBIL", "lime", "Styrespak til venstre, ENTER og MELLOMROM til høgre. Hald telefonen på langs."],
   ];
 
   constructor(game) {
@@ -122,27 +123,42 @@ export class PauseScene extends Scene {
     super(game);
     this.overlay = true;
     this.pausable = false;
+    this.sel = 0;
+  }
+
+  options() {
+    return ["Hald fram", `Lyd: ${this.sound.enabled ? "PÅ" : "AV"}`, "Fullskjerm", "Til tittelskjermen"];
+  }
+
+  choose(i) {
+    this.sound.play("select");
+    if (i === 0) this.game.pop();
+    else if (i === 1) this.sound.toggle();
+    else if (i === 2) this.game.toggleFullscreen();
+    else this.game.toTitle();
   }
 
   handleKey(key) {
-    if (ENTER.has(key) || key === "ESC") {
+    if (UP.has(key)) {
+      this.sel = (this.sel + 3) % 4;
       this.sound.play("select");
-      this.game.pop();
-    } else if (key === "m" || key === "M") {
-      this.sound.toggle();
-    } else if (key === "f" || key === "F") {
-      this.game.toggleFullscreen();
-    } else if (key === "t" || key === "T") {
-      this.game.toTitle();
-    }
+    } else if (DOWN.has(key)) {
+      this.sel = (this.sel + 1) % 4;
+      this.sound.play("select");
+    } else if (CONFIRM.has(key)) this.choose(this.sel);
+    else if (key === "ESC") this.choose(0);
+    else if (key === "m" || key === "M") this.choose(1);
+    else if (key === "f" || key === "F") this.choose(2);
+    else if (key === "t" || key === "T") this.choose(3);
   }
 
   draw(r) {
-    r.box(24, 7, 32, 10, "sky", { style: "double", title: "PAUSE", fill: true });
-    r.text(28, 9, "ENTER / ESC  Hald fram", "white");
-    r.text(28, 10, `M            Lyd ${this.sound.enabled ? "AV" : "PÅ"}`, "white");
-    r.text(28, 11, "F            Fullskjerm", "white");
-    r.text(28, 12, "T            Til tittelskjermen", "white");
-    if (!this.sound.available) r.text(28, 14, "(Nettlesaren støttar ikkje lyd)", "grey");
+    r.box(25, 7, 30, 10, "sky", { style: "double", title: "PAUSE", fill: true });
+    this.options().forEach((opt, i) => {
+      const selected = i === this.sel;
+      r.text(29, 9 + i, `${selected ? "▶ " : "  "}${opt}`, selected ? "yellow" : "white", { bold: selected });
+    });
+    r.text(29, 14, "ESC = hald fram", "grey");
+    if (!this.sound.available) r.text(27, 15, "(Nettlesaren har ikkje lyd)", "grey");
   }
 }

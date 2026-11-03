@@ -15,8 +15,24 @@ Dette er ei omskriving av Python-versjonen til JavaScript, med same klassar, reg
 | Rørsle | Tastaturet si eiga repetering | Jamn rørsle når du held inne piltastane |
 | Storleik | Terminalen må vere minst 80 × 24 | Skalerer automatisk til vindauget |
 | Meny | «Avslutt» | «Fullskjerm» |
+| Mobil | – | Styrespak og knappar på skjermen |
 
-Spelet krev tastatur, og fungerer difor ikkje på mobil eller nettbrett.
+## Mobil og nettbrett
+
+Når spelet blir opna på ein berøringsskjerm, dukkar det opp spelkontrollar:
+
+| Kontroll | Plassering | Tilsvarar |
+|---|---|---|
+| Styrespak | Nede til venstre | Piltastane. Dra fingeren rundt utan å sleppe, og hald inne for å gå. |
+| **ENTER** | Nede til høgre | Enter (stadfest, hopp over tekst) |
+| **MELLOMROM** | Nede til høgre | Mellomrom (spurt, dans, trekk stats på nytt) |
+| **ESC** | Oppe til høgre | Pause |
+| **⌨ Tastatur** | Oppe til venstre | Opnar skjermtastaturet når du skal skrive (namn og maskinskriving) |
+
+- Hald telefonen **på langs**. Står han på høgkant, ber spelet deg snu han, og pausar.
+- Spelet pausar òg av seg sjølv når du byter til ein annan app.
+- Maskinskrivingsspelet gir litt ekstra tid på mobil.
+- **Legg til på heimeskjermen** (Safari: Del → «Legg til på Hjem-skjerm», Chrome: ⋮ → «Legg til på startskjermen»). Då opnar spelet i fullskjerm utan nettlesarlinje, med eige ikon.
 
 ## Valfrie parametrar i adressa
 
@@ -25,6 +41,7 @@ Spelet krev tastatur, og fungerer difor ikkje på mobil eller nettbrett.
 | `?stage=3` | Start på etappe 3 (øv på rektor) |
 | `?seed=42` | Fast tilfeldigheit (same stats og same spel kvar gong) |
 | `?mute` | Start utan lyd |
+| `?touch` | Vis spelkontrollane for berøring, t.d. på ein PC med berøringsskjerm |
 
 Lyd av/på blir hugsa i nettlesaren til neste gong.
 
@@ -60,8 +77,11 @@ Seinare oppdateringar blir publiserte automatisk kvar gong du pushar til `main`.
 web/
 ├── index.html            Sida med <canvas>
 ├── style.css
+├── manifest.webmanifest  Gjer at spelet kan leggjast til på heimeskjermen
+├── icon-*.png
 ├── js/
 │   ├── main.js           Startpunkt: koplar tastatur, lyd og canvas til spelet
+│   ├── touch.js          Styrespak, knappar og skjermtastatur for mobil
 │   ├── game.js           Game: scene-stabel, overgangar og spelflyt
 │   ├── config.js, rng.js, art.js
 │   ├── engine/

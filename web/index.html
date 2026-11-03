@@ -2,17 +2,49 @@
 <html lang="nn">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Terminal Dungeon</title>
   <meta name="description" content="Ein dungeon crawler i retro-terminalstil, lagt til Amalie Skram VGS i Bergen.">
+  <meta name="theme-color" content="#07070d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Dungeon">
+  <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2310101a'/%3E%3Ctext x='8' y='12.5' font-family='monospace' font-size='12' font-weight='bold' text-anchor='middle' fill='%23ffff00'%3E@%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main id="stage">
     <canvas id="screen" tabindex="0" aria-label="Terminal Dungeon – spelskjerm"></canvas>
   </main>
-  <p id="hint">Piltastar/WASD · Mellomrom · Enter · Esc = pause &nbsp;|&nbsp; Spelet krev tastatur.</p>
+  <p id="hint">Piltastar/WASD · Mellomrom · Enter · Esc = pause</p>
+
+  <!-- Spelkontrollar for mobil og nettbrett (blir viste ved berøring) -->
+  <div id="touch" hidden>
+    <div id="dpad" aria-label="Styrespak">
+      <span class="arrow" data-dir="UP">▲</span>
+      <span class="arrow" data-dir="DOWN">▼</span>
+      <span class="arrow" data-dir="LEFT">◀</span>
+      <span class="arrow" data-dir="RIGHT">▶</span>
+      <span class="knob"></span>
+    </div>
+    <div id="buttons">
+      <button type="button" class="btn big" data-key="ENTER">ENTER</button>
+      <button type="button" class="btn mid" data-key=" ">MELLOMROM</button>
+    </div>
+    <button type="button" id="esc" class="btn small" data-key="ESC">ESC</button>
+    <button type="button" id="kbd" class="btn small" hidden>⌨ Tastatur</button>
+  </div>
+  <input id="textin" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+         enterkeyhint="done" aria-label="Skriv her">
+
+  <div id="rotate" role="alert">
+    <div class="phone">▯</div>
+    <p>Snu telefonen til liggjande for å spele.</p>
+  </div>
+
   <noscript>Terminal Dungeon treng JavaScript for å køyre.</noscript>
   <script type="module" src="js/main.js"></script>
 </body>

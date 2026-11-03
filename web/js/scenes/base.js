@@ -19,6 +19,9 @@ export class Scene {
   get rng() { return this.game.rng; }
   get r() { return this.game.r; }
 
+  /** Sant når scena ventar på at brukaren skal skrive (opnar tastaturet på mobil). */
+  get wantsText() { return false; }
+
   enter() {}
 
   resume(result) {

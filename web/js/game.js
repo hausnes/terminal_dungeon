@@ -58,6 +58,7 @@ export class Game {
     this.startStage = startStage;
     this.held = new Set(); // retningstastar som blir haldne inne
     this.onFullscreen = onFullscreen;
+    this.touch = false; // sant når spelet blir styrt med berøring
   }
 
   // ------------------------------------------------------------ scene-stabel

@@ -2,6 +2,10 @@
   --bg: #07070d;
   --frame: #10101a;
   --muted: #6c6c80;
+  --pad-bg: rgba(40, 40, 72, 0.5);
+  --pad-line: rgba(255, 255, 255, 0.16);
+  --pad-text: rgba(255, 255, 255, 0.6);
+  --hot: #ffff66;
 }
 
 * { box-sizing: border-box; }
@@ -20,6 +24,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Ingen zoom, markering eller "kopier"-meny når ein trykkjer på mobil */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #stage {
@@ -37,7 +47,6 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 0 1px #1d1d2b, 0 18px 60px rgba(0, 0, 0, 0.6);
   outline: none;
-  image-rendering: auto;
 }
 
 #hint {
@@ -47,6 +56,154 @@ body {
   text-align: center;
 }
 
+body.touch #hint { display: none; }
+
 @media (max-height: 480px) {
   #hint { display: none; }
+}
+
+/* ------------------------------------------------------------ kontrollar */
+#touch {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#touch[hidden] { display: none; }
+
+#dpad {
+  position: absolute;
+  left: max(14px, env(safe-area-inset-left));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: var(--pad-bg);
+  border: 1px solid var(--pad-line);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#dpad .arrow {
+  position: absolute;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--pad-text);
+  transform: translate(-50%, -50%);
+  transition: color 60ms, transform 60ms;
+}
+
+#dpad .arrow[data-dir="UP"] { left: 50%; top: 18%; }
+#dpad .arrow[data-dir="DOWN"] { left: 50%; top: 82%; }
+#dpad .arrow[data-dir="LEFT"] { left: 18%; top: 50%; }
+#dpad .arrow[data-dir="RIGHT"] { left: 82%; top: 50%; }
+
+#dpad .arrow.active {
+  color: var(--hot);
+  transform: translate(-50%, -50%) scale(1.35);
+}
+
+#dpad .knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--pad-line);
+}
+
+#buttons {
+  position: absolute;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.btn {
+  font-family: inherit;
+  font-weight: bold;
+  color: var(--hot);
+  background: var(--pad-bg);
+  border: 1px solid var(--pad-line);
+  border-radius: 999px;
+  pointer-events: auto;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background 60ms, transform 60ms;
+}
+
+.btn.big { width: 86px; height: 86px; font-size: 14px; }
+.btn.mid { width: 104px; height: 48px; font-size: 11px; color: #87d7ff; }
+.btn.small { padding: 7px 14px; font-size: 12px; color: #d0d0d0; }
+
+.btn.pressed {
+  background: rgba(255, 255, 120, 0.32);
+  transform: scale(0.94);
+}
+
+#esc {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+}
+
+#kbd {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(14px, env(safe-area-inset-left));
+  color: var(--hot);
+}
+
+#kbd[hidden] { display: none; }
+
+/* Usynleg tekstfelt som opnar tastaturet på mobil (16px hindrar zoom på iOS) */
+#textin {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  font-size: 16px;
+}
+
+/* ------------------------------------------------------------ snu telefonen */
+#rotate {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  background: var(--bg);
+  color: var(--hot);
+  text-align: center;
+  font-size: 17px;
+}
+
+body.rotate #rotate { display: flex; }
+
+#rotate .phone {
+  font-size: 64px;
+  color: #87d7ff;
+  animation: tilt 2.4s ease-in-out infinite;
+}
+
+@keyframes tilt {
+  0%, 30% { transform: rotate(0deg); }
+  60%, 100% { transform: rotate(-90deg); }
 }

@@ -53,7 +53,7 @@ export class GameOverScene extends Scene {
     drawBig(r, 3, this.title, (cx, cy) => ((cx + cy + Math.floor(this.t * 10)) % 7 ? "red" : "darkred"), x);
     wrap(this.reason, 66).slice(0, 3).forEach((line, i) => r.center(10 + i, line, "white", { bold: true }));
     summary(this.game).forEach(([text, color], i) => r.center(14 + i, text, color));
-    if (this.t > 1) r.center(20, "ENTER = prøv igjen  ·  T = tittelskjermen", "yellow", { bold: true });
+    if (this.t > 1) r.center(20, "ENTER = prøv igjen  ·  ESC = tittelskjermen", "yellow", { bold: true });
   }
 }
 
@@ -113,6 +113,6 @@ export class VictoryScene extends Scene {
     r.center(16, `Samla ${p.record.kroner} kr · ${p.record.ting} ting · ${p.record.skade} skade`, "grey");
     r.text(40, 18, "Lars, rektor (motvillig)", "purple");
     r.text(40, 19, "~".repeat(23), "purple");
-    if (this.t > 1.5) r.center(22, "Gratulerer! ENTER = spel igjen  ·  T = tittelskjermen", "yellow", { bold: true });
+    if (this.t > 1.5) r.center(22, "Gratulerer! ENTER = spel igjen  ·  ESC = tittelskjermen", "yellow", { bold: true });
   }
 }
