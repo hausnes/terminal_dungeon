@@ -1,17 +1,26 @@
 # Terminal Dungeon
 
-Ein dungeon crawler i terminalen, skriven i Python. Spelet går føre seg på **Amalie Skram VGS** i Bergen, og målet er å kome seg forbi baristaen, IT-ansvarleg og rektor for å få vitnemålet.
+Ein dungeon crawler i retro-terminalstil. Spelet går føre seg på **Amalie Skram VGS** i Bergen, og målet er å kome seg forbi baristaen, IT-ansvarleg og rektor for å få vitnemålet.
+
+**▶ Spel i nettlesaren: <https://hausnes.github.io/terminal_dungeon/web/>** (fungerer òg på mobil)
 
 Prosjektet har to mål:
 
-- **Objektorientert Python.** Koden er bygd opp med klassar og arv, slik at det er enkelt å utvide spelet med fleire brett, fiendar, våpen og minispel.
-- **Berre terminalen.** Alt skjer i terminalen, men med fargar, animasjonar, partikkeleffektar, musikk og lydeffektar. Spelet treng ingen eksterne pakkar.
+- **Objektorientert programmering.** Koden er bygd opp med klassar og arv, slik at det er enkelt å utvide spelet med fleire brett, fiendar, våpen og minispel.
+- **Terminalkjensle.** Alt blir teikna som teikn i eit rutenett på 80 × 24, men med fargar, animasjonar, partikkeleffektar, musikk og lydeffektar. Ingen eksterne pakkar eller bibliotek trengst.
+
+Spelet finst i to utgåver med same innhald:
+
+| Utgåve | Mappe | Køyrer i |
+|---|---|---|
+| **Python** (originalen) | `terminal_dungeon/` | Terminalen, via `curses` |
+| **JavaScript** | `web/` | Nettlesaren, på PC, Mac, mobil og nettbrett |
 
 ---
 
 ## Innhald
 
-- [Last ned og spel](#last-ned-og-spel)
+- [Tre måtar å spele på](#tre-måtar-å-spele-på)
 - [Om spelet](#om-spelet)
 - [Fiendane](#fiendane)
 - [Ting du kan finne](#ting-du-kan-finne)
@@ -23,16 +32,50 @@ Prosjektet har to mål:
 
 ---
 
-## Last ned og spel
+## Tre måtar å spele på
 
-Ferdige programfiler for Windows og Mac ligg under [Releases](https://github.com/hausnes/terminal_dungeon/releases/latest). Du treng ikkje installere Python.
+| | Kva du treng | Passar for |
+|---|---|---|
+| [1. I nettlesaren](#1-i-nettlesaren) | Ingenting – berre ei lenkje | Alle, òg på mobil og nettbrett |
+| [2. Programfil](#2-programfil-for-windows-og-mac) | Last ned og dobbeltklikk | PC og Mac utan Python |
+| [3. Frå kjeldekoden](#køyre-frå-kjeldekoden) | Python 3.10+ | Utviklarar og elevar som vil sjå på koden |
+
+### 1. I nettlesaren
+
+Opne **<https://hausnes.github.io/terminal_dungeon/web/>**. Det er det enklaste, og det er denne lenkja du bør dele.
+
+- **PC/Mac:** spel med tastaturet. Spelet skalerer seg etter vindauget, og du kan velje *Fullskjerm* i menyen.
+- **Mobil og nettbrett:** hald telefonen **på langs**. Det dukkar opp ein styrespak til venstre, ENTER og MELLOMROM til høgre, og ESC (pause) oppe til høgre. Skjermtastaturet opnar seg når du skal skrive.
+- **Tips:** legg spelet til på heimeskjermen, så opnar det i fullskjerm med eige ikon.
+  - iPhone/iPad (Safari): *Del → Legg til på Hjem-skjerm*
+  - Android (Chrome): *⋮ → Legg til på startskjermen*
+- **Lyd:** lyden startar når du trykkjer på den første tasten eller knappen, fordi nettlesarar krev det.
+
+Adressa kan ha nokre valfrie tillegg:
+
+| Tillegg | Kva |
+|---|---|
+| `?stage=3` | Start på etappe 3 (øv på rektor) |
+| `?seed=42` | Fast tilfeldigheit (same stats og same spel kvar gong) |
+| `?mute` | Start utan lyd |
+| `?touch` | Vis spelkontrollane for berøring, t.d. på ein PC med berøringsskjerm |
+
+Til dømes: <https://hausnes.github.io/terminal_dungeon/web/?stage=3>
+
+### 2. Programfil for Windows og Mac
+
+Ferdige programfiler av Python-utgåva ligg under [Releases](https://github.com/hausnes/terminal_dungeon/releases/latest). Du treng ikkje installere Python.
 
 | System | Fil | Første gong |
 |---|---|---|
 | Windows | `terminal_dungeon-windows.exe` | Ved åtvaringa «Windows beskytta PC-en»: trykk *Meir info → Køyr likevel*. |
 | Mac (M1 eller nyare) | `terminal_dungeon-mac.zip` | Pakk ut og dobbeltklikk. Gå så til *Systeminnstillingar → Personvern og tryggleik → Opne likevel*. |
 
-Terminalvindauget må vere minst **80 × 24 teikn**.
+Terminalvindauget må vere minst **80 × 24 teikn**. På Windows blir det berre spelt éin lydeffekt om gongen, og det er ingen bakgrunnsmusikk.
+
+### 3. Frå kjeldekoden
+
+Sjå [Køyre frå kjeldekoden](#køyre-frå-kjeldekoden) lenger nede.
 
 ---
 
@@ -150,16 +193,19 @@ Utan våpen kan du berre **daske** (1–3 skade, treff 90 %). Alle våpen gjer m
 
 ## Kontrollar
 
-| Tast | Kva |
-|---|---|
-| Piltastar / WASD | Gå, og vel i menyar |
-| Mellomrom | Spurt i utforskinga, dans i rytmespelet |
-| Enter | Stadfest, eller hopp over tekst |
-| Esc | Pause: lyd av/på, til tittelskjermen, avslutt |
+| Tastatur | Mobil | Kva |
+|---|---|---|
+| Piltastar / WASD | Styrespak | Gå, og vel i menyar |
+| Mellomrom | MELLOMROM | Spurt i utforskinga, dans i rytmespelet, trekk stats på nytt |
+| Enter | ENTER | Stadfest, eller hopp over tekst |
+| Esc | ESC | Pause: lyd av/på, fullskjerm (web), til tittelskjermen, avslutt (terminal) |
+| Bokstavar | ⌨ Tastatur | Skriv namnet ditt og setningane i maskinskrivingsspelet |
 
 ---
 
 ## Køyre frå kjeldekoden
+
+### Python-utgåva (terminal)
 
 Krev **Python 3.10 eller nyare**. På Windows må du òg køyre `pip install windows-curses`.
 
@@ -174,11 +220,32 @@ Spelet brukar fargar og Unicode, så ein moderne terminal fungerer best: macOS T
 
 **Lyd:** All musikk og alle lydeffektar blir laga matematisk i `engine/sound.py` (chiptune med firkant- og trekantbølgjer) og lagra i `~/.cache/terminal_dungeon` første gong spelet startar. Avspelinga brukar `afplay` på macOS, `paplay`/`aplay` på Linux og `winsound` på Windows. På Windows blir det berre spelt éin lydeffekt om gongen, og det er ingen bakgrunnsmusikk.
 
+### JavaScript-utgåva (nettlesar)
+
+Webutgåva er rein HTML, CSS og JavaScript utan byggjesteg. Nettlesarar vil ikkje laste JavaScript-modular rett frå ei fil (`file://`), så du treng ein enkel lokal webserver:
+
+```bash
+python3 -m http.server 8000 --directory web   # opne så http://localhost:8000
+node --test web/tests/                         # køyr testane (Node 22+)
+```
+
+Sjå [`web/README.md`](web/README.md) for meir om webutgåva.
+
 ---
 
 ## Oppbygging av koden
 
-Koden er delt i tre lag:
+```
+terminal_dungeon/          (repoet)
+├── main.py                Startar Python-utgåva
+├── terminal_dungeon/      Python-utgåva (sjå under)
+├── tests/                 Testar for Python-utgåva
+├── web/                   JavaScript-utgåva – same oppbygging, sjå web/README.md
+└── .github/workflows/
+    └── build.yml          Byggjer programfilene for Windows og Mac
+```
+
+Begge utgåvene er delte i tre lag:
 
 - `engine/` kan teikne og spele lyd, men veit ingenting om sjølve spelet.
 - `model/` inneheld spelreglane, utan nokon curses-kode, så han er lett å teste.
@@ -214,6 +281,8 @@ terminal_dungeon/
 
 ## Utvide spelet
 
+Dei to utgåvene har kvar si kodebase med dei same klassane. Vil du at ei endring skal gjelde begge stader, må du gjere ho i både `terminal_dungeon/` (Python) og `web/js/` (JavaScript). Filnamna og klassane svarar til kvarandre, til dømes `model/enemies.py` og `model/enemies.js`.
+
 **Ny fiende:** Lag ein subklasse av `Enemy` i `model/enemies.py`, med tekst, `make_attacks()` og `approaches()`. Legg han så til som ein ny `Stage` i `model/level.py`:
 
 ```python
@@ -228,9 +297,13 @@ Stage("Etappe 4", "Gymsalen", Gymlaerar, hazards=4, chasers=2, color="red")
 
 ## Lage ein ny versjon
 
-Programfilene blir bygde automatisk av GitHub Actions (`.github/workflows/build.yml`). Ved kvar push til `main` blir spelet bygt og testa. Når du pushar ein versjonstagg, blir det i tillegg laga ein ny release med filer til nedlasting:
+**Webutgåva** blir publisert på GitHub Pages ved kvar push til `main`. Etter eitt eller to minutt ligg den nye utgåva ute. Pages er sett opp med *Deploy from a branch → `main` → `/ (root)`*, og difor ligg spelet under `/web/` i adressa.
+
+**Programfilene** blir bygde av GitHub Actions (`.github/workflows/build.yml`). Ved kvar push til `main` blir dei bygde og testa. Når du pushar ein versjonstagg, blir det i tillegg laga ein ny release med filer til nedlasting:
 
 ```bash
 git tag v1.0.1
 git push origin v1.0.1
 ```
+
+Taggen kan òg lagast på GitHub under *Releases → Draft a new release*.
