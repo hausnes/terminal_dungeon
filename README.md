@@ -31,3 +31,68 @@ Spelet foregår på Amalie Skram VGS, ein vidaregåande skule i Bergen. På skul
 Du må altså gjennom Mercedes og Alec før du kan nå bossen Lars. Mellom kampane så kan du gå rundt og utforske for å finne pengar og items. Som nemnt tidlegare kan du plukke opp injal, ein råtten matpakke eller eit kritt.
 
 Sjølv om spelet foregår i terminalen skal det vere grafikk som gjer spelopplevinga spanande. Spelverda kan vere ein skjerm, men du kan gå rundt og utforske. Eg er usikker på korleis dette kan bli gjort, men ynskjer ein kul effekt - og ei spanande oppleving. Kan det vere ein ide at pengane og items fyk rundt på skjermen slik at det er litt utfordrande å ta dei? Forslaget mitt er at du etter visse tidsintervall møter kamp, eksempelvis 10 sek utforsking/samling og så Mercedes, 10 sek utforsking/samling og så Alec, for at du etter nye 10 sek med utforsking/samling møter rektor.
+
+---
+
+## Korleis spele
+
+Krev berre Python 3.10+ – ingen eksterne pakkar.
+
+```bash
+python3 main.py              # eller: python3 -m terminal_dungeon
+python3 main.py --mute       # utan lyd
+python3 main.py --stage 3    # hopp rett til rektor (for å øve)
+```
+
+Terminalen må vere minst **80×24** teikn. Spelet brukar fargar og Unicode, så ein moderne terminal (macOS Terminal, iTerm2, VS Code, Windows Terminal) fungerer best. På Windows må du først køyre `pip install windows-curses`.
+
+| Tast | Kva |
+|---|---|
+| Piltastar / WASD | Gå, vel i menyar |
+| Mellomrom | Spurt (i utforskinga), dans (i rytmespelet) |
+| Enter | Stadfest / hopp over tekst |
+| Esc | Pause (lyd av/på, til tittel, avslutt) |
+
+**Lyd:** All musikk og alle lydeffektar blir laga matematisk i `engine/sound.py` (chiptune med firkant- og trekantbølgjer) og lagra i `~/.cache/terminal_dungeon` første gong. Avspelinga brukar `afplay` (macOS), `paplay`/`aplay` (Linux) eller `winsound` (Windows).
+
+**Testar:** `python3 -m unittest`
+
+## Oppbygging (OOP)
+
+```
+terminal_dungeon/
+├── game.py            Game: hovudløkka, scene-stabel, overgangar og spelflyt
+├── art.py             ASCII-portrett og blokkskrift
+├── engine/            Generell motor – veit ingenting om sjølve spelet
+│   ├── screen.py      Renderer: fargar, klipping, risting, blink
+│   ├── effects.py     Particle, FloatingText, Projectile
+│   └── sound.py       Synthesizer + SoundManager
+├── model/             Spelreglane – ingen curses her, lett å teste
+│   ├── stats.py       Stats (Styrke, Utspekulert, Sexy)
+│   ├── player.py      Player
+│   ├── items.py       Item → Coin/Wallet/…, CinnamonBun, Weapon → Ruler/RottenLunch/Chalk
+│   ├── attacks.py     Attack → ExpelAttack, DoxAttack, MinigameAttack
+│   ├── approaches.py  Approach → PayApproach, StatApproach, MinigameApproach, FightApproach
+│   ├── enemies.py     Enemy → Mercedes, Alec, Lars
+│   └── level.py       Level og Stage
+└── scenes/            Kvar skjerm er ei Scene
+    ├── title.py       Tittel (med Bergens-regn), hjelp, pause
+    ├── character.py   Innskriving og trekking av stats
+    ├── explore.py     Utforsking med flygande pengar, lekser og vikar
+    ├── encounter.py   Møte med fiende og val av strategi
+    ├── battle.py      Turbasert kamp
+    ├── minigames.py   Rytme, advokatquiz, hald-deg-vaken, maskinskriving
+    └── ending.py      Game over og vitnemål
+```
+
+### Utvide spelet
+
+**Ny fiende:** lag ein subklasse av `Enemy` i `model/enemies.py`, med tekst, `make_attacks()` og `approaches()`. Legg han så til som ein ny `Stage` i `model/level.py`:
+
+```python
+Stage("Etappe 4", "Gymsalen", Gymlaerar, hazards=4, chasers=2, color="red")
+```
+
+**Nytt våpen:** arv frå `Weapon` i `model/items.py`, set skade/treffsjanse/bruk, og overstyr `on_hit()` om det skal ha ein spesialeffekt. Legg det i `WEAPON_TYPES`, så dukkar det opp i utforskinga.
+
+**Nytt minispel:** arv frå `Minigame` i `scenes/minigames.py` og registrer det i `MINIGAMES`. Då kan både `MinigameApproach` og `MinigameAttack` bruke det.
