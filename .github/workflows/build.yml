@@ -1,0 +1,98 @@
+# Byggjer ferdige programfiler for Windows og Mac med PyInstaller.
+#
+# - Kvar push til main: byggjer og testar (filene ligg under "Artifacts" på køyringa).
+# - Push av ein tag som v1.0.0: lagar i tillegg ei GitHub Release med filene til nedlasting.
+#     git tag v1.0.0 && git push origin v1.0.0
+
+name: Bygg spelet
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Bygg (${{ matrix.label }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            label: Windows
+            exe: dist/terminal_dungeon.exe
+            asset: terminal_dungeon-windows.exe
+          - os: macos-latest
+            label: Mac
+            exe: dist/terminal_dungeon
+            asset: terminal_dungeon-mac.zip
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer byggjeverktøy
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller==6.22.3
+          if [ "$RUNNER_OS" = "Windows" ]; then python -m pip install "windows-curses>=2.4"; fi
+
+      - name: Køyr testar
+        run: python -m unittest -v
+
+      - name: Bygg programfil
+        run: pyinstaller --onefile --name terminal_dungeon --noconfirm main.py
+
+      - name: Sjekk at programfila verkar
+        run: ${{ matrix.exe }} --selftest
+
+      - name: Pakk for nedlasting
+        run: |
+          mkdir -p release
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp dist/terminal_dungeon.exe "release/${{ matrix.asset }}"
+          else
+            # zip tek vare på at fila er køyrbar
+            (cd dist && zip -9 "../release/${{ matrix.asset }}" terminal_dungeon)
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: release/${{ matrix.asset }}
+          if-no-files-found: error
+
+  release:
+    name: Lag GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          body: |
+            ## Last ned og spel
+
+            **Windows:** last ned `terminal_dungeon-windows.exe` og dobbeltklikk.
+            Kjem det ei blå åtvaring («Windows beskytta PC-en»), trykk **Meir info → Køyr likevel**.
+
+            **Mac (Apple Silicon, M1 eller nyare):** last ned `terminal_dungeon-mac.zip`, dobbeltklikk for å pakke ut, og dobbeltklikk på `terminal_dungeon`.
+            Første gong seier macOS at fila ikkje kan opnast. Gå då til **Systeminnstillingar → Personvern og tryggleik**, rull ned og trykk **Opne likevel**.
+
+            Gjer terminalvindauget minst 80×24 teikn stort. Lyden verkar med ein gong – trykk ESC i spelet for å slå han av.
