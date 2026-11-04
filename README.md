@@ -42,7 +42,7 @@ Spelet finst i to utgåver med same innhald:
 
 ### 1. I nettlesaren
 
-Opne **<https://hausnes.github.io/terminal_dungeon/web/>**. Det er det enklaste, og det er denne lenkja du bør dele.
+Opne **<https://hausnes.github.io/terminal_dungeon/web/>**.
 
 - **PC/Mac:** spel med tastaturet. Spelet skalerer seg etter vindauget, og du kan velje *Fullskjerm* i menyen.
 - **Mobil og nettbrett:** hald telefonen **på langs**. Det dukkar opp ein styrespak til venstre, ENTER og MELLOMROM til høgre, og ESC (pause) oppe til høgre. Skjermtastaturet opnar seg når du skal skrive.
@@ -218,7 +218,7 @@ python3 -m unittest          # køyr testane
 
 Spelet brukar fargar og Unicode, så ein moderne terminal fungerer best: macOS Terminal, iTerm2, VS Code eller Windows Terminal.
 
-**Lyd:** All musikk og alle lydeffektar blir laga matematisk i `engine/sound.py` (chiptune med firkant- og trekantbølgjer) og lagra i `~/.cache/terminal_dungeon` første gong spelet startar. Avspelinga brukar `afplay` på macOS, `paplay`/`aplay` på Linux og `winsound` på Windows. På Windows blir det berre spelt éin lydeffekt om gongen, og det er ingen bakgrunnsmusikk.
+**Lyd:** All musikk og alle lydeffektar blir laga matematisk i `engine/sound.py` (chiptune med firkant- og trekantbølgjer) og lagra i `~/.cache/terminal_dungeon` første gong spelet startar. Avspelinga brukar `afplay` på macOS, `paplay`/`aplay` på Linux og `winsound` på Windows. I Windows blir det berre spelt éin lydeffekt om gongen, og det er ingen bakgrunnsmusikk.
 
 ### JavaScript-utgåva (nettlesar)
 
@@ -226,7 +226,7 @@ Webutgåva er rein HTML, CSS og JavaScript utan byggjesteg. Nettlesarar vil ikkj
 
 ```bash
 python3 -m http.server 8000 --directory web   # opne så http://localhost:8000
-node --test web/tests/                         # køyr testane (Node 22+)
+node --test web/tests/                        # køyr testane (Node 22+)
 ```
 
 Sjå [`web/README.md`](web/README.md) for meir om webutgåva.
